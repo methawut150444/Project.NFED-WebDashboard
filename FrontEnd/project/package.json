@@ -16,12 +16,14 @@
     "next": "15.1.6",
     "npm": "^11.1.0",
     "react": "^19.0.0",
+    "react-date-range": "^2.0.1",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
+    "@types/react-date-range": "^1.4.9",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",

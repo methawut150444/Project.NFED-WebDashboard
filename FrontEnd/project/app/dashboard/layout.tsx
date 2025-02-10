@@ -1,4 +1,5 @@
-import Sidebar from "./component/sidebar"; // Update path if necessary
+import "../globals.css"; // ✅ Import Tailwind styles
+import Sidebar from "../../components/sidebar"; // Update path if necessary
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

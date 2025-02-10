@@ -1,7 +1,7 @@
 "use client"; // Required for useState and usePathname in Next.js
 
+import React from "react"; // ✅ Fix: Explicitly import React
 import Image from "next/image";
-
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -54,8 +54,8 @@ function Sidebar() {
               src="/NFED_logo.png"
               className={isSidebarOpen ? "h-12 w-auto" : "h-14 w-auto"}
               
-              width={100}  // ✅ Required width
-              height={50}  // ✅ Required height
+              width={100} 
+              height={50}
               priority
             />
           </Link>
