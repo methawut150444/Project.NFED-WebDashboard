@@ -1,7 +1,9 @@
+'use client'
+
 // components
-import ShowRealTime from '../../../components/showTime';
-import MultiSelectDropdown from '../../../components/multiSelect'; // Import the dropdown
-import DateRangePicker from '../../../lib/dateRangePicker'
+import ShowRealTime from '../../components/showTime';
+import MultiSelectDropdown from '../../components/multiSelect'; // Import the dropdown
+import DateRangePicker from '../../lib/dateRangePicker'
 
 function Home() {
   const meter_option = ['Air Compress', 'Hall', '2 Floor'];
