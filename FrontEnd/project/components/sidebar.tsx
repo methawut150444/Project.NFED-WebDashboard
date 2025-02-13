@@ -48,7 +48,7 @@ function Sidebar() {
           </button>
 
           {/* Sidebar Logo */}
-          <Link href="/" className="flex items-center ps-2.5 mb-4 pb-5 border-b-2 border-gray-300">
+          <Link href="/dashboard" className="flex items-center ps-2.5 mb-4 pb-5 border-b-2 border-gray-300">
             <Image
               alt="NFED Logo"
               src="/NFED_logo.png"
@@ -64,35 +64,35 @@ function Sidebar() {
           <ul className="space-y-2 font-medium">
             <li>
               <Link
-                href="/"
-                className={`flex items-center p-2 rounded-lg ${isActive("/") ? "bg-Blue_NFED_1 text-white" : "bg-white text-black hover:bg-gray-100 hover:text-black"
+                href="/dashboard"
+                className={`flex items-center p-2 rounded-lg ${isActive("/dashboard") ? "bg-Blue_NFED_1 text-white" : "bg-white text-black hover:bg-gray-100 hover:text-black"
                   } transition`}
               >
-                <HomeIcon className={`${isActive("/") ? "text-white" : "text-black"}`} />
-                <span className="ms-3">Home</span>
+                <HomeIcon className={`${isActive("/dashboard") ? "text-white" : "text-black"}`} />
+                <span className="ms-3">Overview</span>
               </Link>
             </li>
             <li>
               <Link
-                href="/powerMonitoring"
-                className={`flex items-center p-2 rounded-lg ${isActive("/powerMonitoring")
+                href="/dashboard/powerMonitoring"
+                className={`flex items-center p-2 rounded-lg ${isActive("/dashboard/powerMonitoring")
                     ? "bg-Blue_NFED_1 text-white"
                     : "bg-white text-black hover:bg-gray-100 hover:text-black"
                   } transition`}
               >
-                <BoltIcon className={`${isActive("/powerMonitoring") ? "text-white" : "text-black"}`} />
+                <BoltIcon className={`${isActive("/dashboard/powerMonitoring") ? "text-white" : "text-black"}`} />
                 <span className="ms-3">Power Monitoring</span>
               </Link>
             </li>
             <li>
               <Link
-                href="/weatherStation"
-                className={`flex items-center p-2 rounded-lg ${isActive("/weatherStation")
+                href="/dashboard/weatherStation"
+                className={`flex items-center p-2 rounded-lg ${isActive("/dashboard/weatherStation")
                     ? "bg-Blue_NFED_1 text-white"
                     : "bg-white text-black hover:bg-gray-100 hover:text-black"
                   } transition`}
               >
-                <CloudIcon className={`${isActive("/weatherStation") ? "text-white" : "text-black"}`} />
+                <CloudIcon className={`${isActive("/dashboard/weatherStation") ? "text-white" : "text-black"}`} />
                 <span className="ms-3">Weather Station</span>
               </Link>
             </li>
