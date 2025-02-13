@@ -15,6 +15,7 @@ function Home() {
 
       <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
         <div id="Main Section" className="grid sm:grid-cols-2 gap-5 grid-cols-1">
+          
           {/* -------------------------- page - Power Monitoring -------------------------- */}
           <div
             id="power monitoring"

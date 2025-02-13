@@ -53,9 +53,9 @@ function Sidebar() {
               alt="NFED Logo"
               src="/NFED_logo.png"
               className={isSidebarOpen ? "h-12 w-auto" : "h-14 w-auto"}
-              
-              width={100} 
-              height={50}
+
+              width={5000}
+              height={500}
               priority
             />
           </Link>
@@ -65,10 +65,12 @@ function Sidebar() {
             <li>
               <Link
                 href="/dashboard"
-                className={`flex items-center p-2 rounded-lg ${isActive("/dashboard") ? "bg-Blue_NFED_1 text-white" : "bg-white text-black hover:bg-gray-100 hover:text-black"
+                className={`flex items-center p-2 rounded-lg ${isActive("/dashboard")
+                  ? "bg-Blue_NFED_2 text-white"
+                  : "bg-white text-black hover:bg-gray-100 hover:text-black"
                   } transition`}
               >
-                <HomeIcon className={`${isActive("/dashboard") ? "text-white" : "text-black"}`} />
+                <HomeIcon className={`${isActive("/dashboard") ? "text-white" : "text-gray-600"}`} />
                 <span className="ms-3">Overview</span>
               </Link>
             </li>
@@ -76,11 +78,11 @@ function Sidebar() {
               <Link
                 href="/dashboard/powerMonitoring"
                 className={`flex items-center p-2 rounded-lg ${isActive("/dashboard/powerMonitoring")
-                    ? "bg-Blue_NFED_1 text-white"
-                    : "bg-white text-black hover:bg-gray-100 hover:text-black"
+                  ? "bg-Blue_NFED_2 text-white"
+                  : "bg-white text-black hover:bg-gray-100 hover:text-black"
                   } transition`}
               >
-                <BoltIcon className={`${isActive("/dashboard/powerMonitoring") ? "text-white" : "text-black"}`} />
+                <BoltIcon className={`${isActive("/dashboard/powerMonitoring") ? "text-white" : "text-gray-600"}`} />
                 <span className="ms-3">Power Monitoring</span>
               </Link>
             </li>
@@ -88,11 +90,11 @@ function Sidebar() {
               <Link
                 href="/dashboard/weatherStation"
                 className={`flex items-center p-2 rounded-lg ${isActive("/dashboard/weatherStation")
-                    ? "bg-Blue_NFED_1 text-white"
-                    : "bg-white text-black hover:bg-gray-100 hover:text-black"
+                  ? "bg-Blue_NFED_2 text-white"
+                  : "bg-white text-black hover:bg-gray-100 hover:text-black"
                   } transition`}
               >
-                <CloudIcon className={`${isActive("/dashboard/weatherStation") ? "text-white" : "text-black"}`} />
+                <CloudIcon className={`${isActive("/dashboard/weatherStation") ? "text-white" : "text-gray-600"}`} />
                 <span className="ms-3">Weather Station</span>
               </Link>
             </li>
