@@ -7,6 +7,7 @@ import { fetch_AED_inMonth } from "./api/route";
 
 // Components
 import ShowRealTime from "../components/showTime";
+import PowerChart from "../components/chart";
 
 function Page() {
   const [powerDiff, setPowerDiff] = useState<number | null>(null);
@@ -76,7 +77,9 @@ function Page() {
                 >
                   Daily Energy Accumulation
                 </div>
-                <div id="graph">[graph]</div>
+                <div id="graph"  className="px-1">
+                  <PowerChart />
+                </div>
               </div>
 
               {/* -------------< End >------------- */}

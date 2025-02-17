@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 .board{
-    @apply p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 
+    @apply 
+    p-4 
+    /* border-2 border-gray-200 border-dashed  */
+    rounded-lg 
+    dark:border-gray-700 
 
     text-gray-600
     /* text-CU_Gray */
@@ -13,7 +17,7 @@
 }
 
 .note {
-    @apply h-auto rounded bg-gray-50 dark:bg-gray-800 shadow-lg rounded-lg border border-gray-100
+    @apply h-auto rounded bg-gray-50 dark:bg-gray-800 shadow-xl rounded-lg border border-gray-100
 }
 .note-topicName{
     @apply h-auto pl-3 p-2 rounded-t-lg 
