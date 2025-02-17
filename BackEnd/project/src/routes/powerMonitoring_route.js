@@ -9,8 +9,8 @@ router.get('/', (req, res) => {
     res.send("NFED WebService/ powerMonitoring/");
 });
 
-//* lastest_AED --> http://localhost:9999/api/powerMonitoring/lastest_AED
-router.get("/lastest_AED", controller.lastest_AED)
+//* lastest_AED --> http://localhost:9999/api/powerMonitoring/AED_inMonth
+router.get("/AED_inMonth", controller.AED_inMonth)
 
 
 

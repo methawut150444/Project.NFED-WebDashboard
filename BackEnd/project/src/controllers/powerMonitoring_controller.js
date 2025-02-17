@@ -2,35 +2,33 @@ const { influx_NFED, DB_config_1 } = require('../config/db');
 const queryApi = influx_NFED.getQueryApi(DB_config_1.org);
 
 const queries = require('../models/powerMonitoring_queries');
+
+// component
+const datetimeUtils = require('../utils/datetimeUtils')
 // const processData = require('../formatData_Influx')
 
-const lastest_AED = async (req, res) => {
+const AED_inMonth = async (req, res) => {
     // todo: -----> step: get request params or initial data
-    // console.log(req.query)
-    const meter = ''
-    const factor = ''
-    const utc_startTime = ''
-    const utc_endTime = ''
 
-    if (!Object.keys(req.query).length) {
-        return res.status(400).send('JSON body is required!! 😡😡');
+    // todo: -----> step: query data
+    const query = queries.AED_inMonth(datetimeUtils.utc1stMonth());
+
+    // todo: -----> step: check data
+    try {
+        const data = await queryData(query);
+        // todo: -----> step: Convert data format !!!
+
+        const editData = data
+            .filter(item => item._measurement) // Remove entries that don't have _measurement
+            .map(({ _measurement, _diff }) => ({ _measurement, _diff }));
+
+        const result = editData.find(item => item._measurement === "Aircompressor_Power_Meter_1");      // * ทำไปก่อนเพราะค่าตัวอื่นเพี้ยน
+
+        // todo: -----> step: send response
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    // todo: -----> step: data mapping format
-
-    // // todo: -----> step: query data
-    // const query = queries.requestForm(meter, factor, utc_startTime, utc_endTime);
-
-    // // todo: -----> step: check data
-    // try {
-    //     const data = await queryData(query);
-
-    //     // todo: -----> step: Convert data format !!!
-
-    //     // todo: -----> step: End
-    //     res.status(200).json(data);
-    // } catch (error) {
-    //     res.status(500).json({ error: error.message });
-    // }
 }
 
 
@@ -165,7 +163,7 @@ const lastest_AED = async (req, res) => {
 // };
 
 
-// * =========================< Query function to fetch data >========================= * //
+// * =========================< Query function to fetch data to InfluxDB >========================= * //
 const queryData = async (QUERY_COMMAND) => {
     return new Promise((resolve, reject) => {
         const results = [];
@@ -175,11 +173,11 @@ const queryData = async (QUERY_COMMAND) => {
                 results.push(tableMeta.toObject(row));
             },
             error(error) {
-                console.error(`Error querying InfluxDB: ${error.message}`);
+                // console.error(`Error querying InfluxDB: ${error.message}`);
                 reject(error);
             },
             complete() {
-                console.log('Query complete.');
+                // console.log('Query complete.');
                 resolve(results);
             },
         });
@@ -187,7 +185,7 @@ const queryData = async (QUERY_COMMAND) => {
 };
 
 module.exports = { 
-    lastest_AED,
+    AED_inMonth,
 
 
     queryData,  //* Final Function

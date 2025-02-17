@@ -1,14 +1,47 @@
+const AED_inMonth = (start) => `
+    import "experimental"
+    first = 
+        from(bucket: "Machine_Power_Monitoring")
+            |> range(start: ${start}, stop: now())
+            |> filter(fn: (r) => r["_field"] == "ACTIVE_ENERGY_DELIVERED")
+            |> keep(columns: ["_time", "_value", "_measurement"])
+            |> group(columns: ["_measurement"]) 
+            |> sort(columns: ["_time"], desc: false)
+            |> limit(n: 1)
+
+    last = 
+        from(bucket: "Machine_Power_Monitoring")
+            |> range(start: ${start}, stop: now())
+            |> filter(fn: (r) => r["_field"] == "ACTIVE_ENERGY_DELIVERED")
+            |> keep(columns: ["_time", "_value", "_measurement"])
+            |> group(columns: ["_measurement"]) 
+            |> sort(columns: ["_time"], desc: true)
+            |> limit(n: 1)
+
+    diff = join(tables: {first: first, last: last}, on: ["_measurement"])
+        |> map(fn: (r) => ({ _measurement: r._measurement, _diff: r._value_last - r._value_first }))
+
+    total = diff
+        |> group()
+        |> sum(column: "_diff")
+
+    union(tables: [diff, total])
+`
+
+
 const requestForm = (meter, factor, start, stop) => `
-    from(bucket: "Machine_Power_Monitoring")
+from(bucket: "Machine_Power_Monitoring")
     |> range(start: ${start}, stop: ${stop})
     |> filter(fn: (r) => r["_measurement"] == "${meter}")
     |> filter(fn: (r) => r["_field"] == "${factor}")
     |> yield(name: "mean")
-`;
+`
 
-  
-module.exports = { 
+
+module.exports = {
+    AED_inMonth,
     requestForm,
+
 };
 
 
@@ -30,6 +63,17 @@ module.exports = {
             - THD_VOLTAGE_L1_N
             - THD_VOLTAGE_L2_N
             - THD_VOLTAGE_L3_N
+
+        * [measurement]
+        - Hall_Power_Meter_1
+        - Hall_Power_Meter_2
+        - Hall_Power_Meter_3
+        - Hall_Power_Meter_4
+        - Hall_Power_Meter_5
+        - Hall_Power_Meter_6
+        - Hall_Power_Meter_7
+        - Hall_Power_Meter_8
+        - Hall_Power_Meter_9
 
         * [measurement]
         - CNC_Power_Meter_1
@@ -67,7 +111,7 @@ module.exports = {
             - THD_VOLTAGE_L2_N
             - THD_VOLTAGE_L3_N
             - THD_VOLTAGE_N
-            
+
 
         * [measurement]
         - CNC_Power_Meter_2
@@ -105,3 +149,7 @@ module.exports = {
         - Welding_Power_Meter_1
             ? [field]
 */
+
+//     |> filter(fn: (r) => r["_measurement"] == "Aircompressor_Power_Meter_1" or r["_measurement"] == "CNC_Power_Meter_1" or r["_measurement"] == "CNC_Power_Meter_2" or r["_measurement"] == "CNC_Power_Meter_3" or r["_measurement"] == "CNC_Power_Meter_4" or r["_measurement"] == "CNC_Power_Meter_5" or r["_measurement"] == "CNC_Power_Meter_6" or r["_measurement"] == "CNC_Power_Meter_7" or r["_measurement"] == "CNC_Power_Meter_8" or r["_measurement"] == "Hall_Power_Meter_1" or r["_measurement"] == "CNC_Power_Meter_9" or r["_measurement"] == "Hall_Power_Meter_2" or r["_measurement"] == "Hall_Power_Meter_3" or r["_measurement"] == "Hall_Power_Meter_4" or r["_measurement"] == "Hall_Power_Meter_5" or r["_measurement"] == "Hall_Power_Meter_7" or r["_measurement"] == "Hall_Power_Meter_6" or r["_measurement"] == "Hall_Power_Meter_8" or r["_measurement"] == "Hall_Power_Meter_9" or r["_measurement"] == "Welding_Power_Meter_1")
+
+

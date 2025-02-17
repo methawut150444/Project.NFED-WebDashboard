@@ -1,19 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
-import "./globals.css"; 
+import "./globals.css"; // ✅ Import Tailwind styles
 
-import { fetchActivePower } from "./api/route";
+// Import API function
+import { fetch_AED_inMonth } from "./api/route";
 
 // Components
 import ShowRealTime from "../components/showTime";
 
 function Page() {
-  const [activePower, setActivePower] = useState<number | null>(null);
+  const [powerDiff, setPowerDiff] = useState<number | null>(null);
 
   useEffect(() => {
     const getData = async () => {
-      const data = await fetchActivePower();
-      setActivePower(data);
+      const data = await fetch_AED_inMonth();
+      setPowerDiff(data);
     };
 
     // Fetch initially
@@ -60,9 +61,9 @@ function Page() {
                   className="flex w-full pr-7 justify-end items-baseline gap-3 font-poppins"
                 >
                   <p className="text-8xl mainParameter">
-                    {activePower !== null ? activePower : "Loading..."}
+                    {powerDiff !== null ? powerDiff.toLocaleString() : "Loading..."}
                   </p>
-                  <p className="text-3xl"> kWh </p>
+                  <p className="text-3xl"> Wh </p>
                 </div>
               </div>
 
