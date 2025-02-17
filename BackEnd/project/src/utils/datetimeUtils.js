@@ -12,7 +12,14 @@ const utc1stMonth = () => {
     return firstDay.toISOString();
 };
 
+const utc0000InDay = () => {
+    const now = new Date();
+    const midnightBangkok = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 17)); // 17:00 UTC คือ 00:00 ไทย
+    return midnightBangkok.toISOString();
+};
+
 module.exports = {
     utcCurrentTime,
-    utc1stMonth
+    utc1stMonth,
+    utc0000InDay
 };

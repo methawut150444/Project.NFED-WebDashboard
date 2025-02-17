@@ -5,8 +5,9 @@ const queries = require('../models/powerMonitoring_queries');
 
 // component
 const datetimeUtils = require('../utils/datetimeUtils')
-// const processData = require('../formatData_Influx')
+const formatData = require('../utils/formatData')
 
+// Todo: // ---------------------------------------< AED_inMonth >--------------------------------------- //
 const AED_inMonth = async (req, res) => {
     // todo: -----> step: get request params or initial data
 
@@ -31,7 +32,27 @@ const AED_inMonth = async (req, res) => {
     }
 }
 
+// ---------------------------------------< AED_inDay >--------------------------------------- //
+const AED_inDay = async (req, res) => {
+    // todo: -----> step: get request params or initial data
 
+    // todo: -----> step: query data
+    const query = queries.AED_inDay(datetimeUtils.utc0000InDay());
+    // console.log(datetimeUtils.utc0000InDay())
+    
+    // todo: -----> step: check data
+    try {
+        const data = await queryData(query);
+        // todo: -----> step: Convert data format !!!
+
+        const formattedData = formatData.format_AED_inDay_chart(data);
+
+        // todo: -----> step: send response
+        res.status(200).json(formattedData);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 // // * ----------------------------------------------------------------------------< Select Time Format (H, D, W, M, Y)  >
 // const selectData = async (req, res) => {
@@ -107,7 +128,7 @@ const AED_inMonth = async (req, res) => {
 //         }
 //     }
 
-    
+
 //     const startTime_change = new Date(start_timestamp)
 //     const endTime_change = new Date(end_timestamp)
 
@@ -126,7 +147,7 @@ const AED_inMonth = async (req, res) => {
 
 //     try {
 //         const data = await queryData(query);
-        
+
 //         // res.status(200).json(data);
 //         res.status(200).json(processData(data));
 //     } catch (error) {
@@ -134,40 +155,31 @@ const AED_inMonth = async (req, res) => {
 //     }
 // };
 
-// // * ----------------------------------------------------------------------------< Select date range  >
-// const selectTime = async (req, res) => {
-//     console.log(req.body)
-//     const { 
-//         meter,
-//         factor,
-//         start_date, 
-//         end_date, 
-//     } = req.body;
+// * ----------------------------------------------------------------------------< for get JSON data in influxDB  >
+const Test_getRawData = async (req, res) => {
 
-//     // For defense error when request with not JSON body together
-//     if (!Object.keys(req.body).length) {
-//         return res.status(400).send('JSON body is required!! 😡😡');
-//     }
+    const meter = "Aircompressor_Power_Meter_1"
+    const factor = "ACTIVE_ENERGY_DELIVERED"
+    const start = datetimeUtils.utc0000InDay()
+    const stop = "now()"
 
-//     const start_timestamp = `${start_date}T00:00:00Z`;
-//     const end_timestamp = `${end_date}T23:59:59Z`;
+    const query = queries.requestForm(meter, factor, start, stop);
 
-//     const query = queries.requestForm(meter, factor, start_timestamp, end_timestamp);
-
-//     try {
-//         const data = await queryData(query);
-//         res.status(200).json(data);
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
+    try {
+        const data = await queryData(query);
+        console.log(data)
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 
 // * =========================< Query function to fetch data to InfluxDB >========================= * //
 const queryData = async (QUERY_COMMAND) => {
     return new Promise((resolve, reject) => {
         const results = [];
-  
+
         queryApi.queryRows(QUERY_COMMAND, {
             next(row, tableMeta) {
                 results.push(tableMeta.toObject(row));
@@ -184,9 +196,11 @@ const queryData = async (QUERY_COMMAND) => {
     });
 };
 
-module.exports = { 
+module.exports = {
     AED_inMonth,
+    AED_inDay,
 
 
+    Test_getRawData,
     queryData,  //* Final Function
 };

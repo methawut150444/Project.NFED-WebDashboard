@@ -28,18 +28,42 @@ const AED_inMonth = (start) => `
     union(tables: [diff, total])
 `
 
+const AED_inDay = (start) => `
+    first_points = from(bucket: "Machine_Power_Monitoring")
+        |> range(start: ${start}, stop: now())
+        |> filter(fn: (r) => r["_measurement"] == "Aircompressor_Power_Meter_1")
+        |> filter(fn: (r) => r["_field"] == "ACTIVE_ENERGY_DELIVERED")
+        |> aggregateWindow(every: 30m, fn: first)
+        |> keep(columns: ["_time", "_value"])
+
+    last_points = from(bucket: "Machine_Power_Monitoring")
+        |> range(start: ${start}, stop: now())
+        |> filter(fn: (r) => r["_measurement"] == "Aircompressor_Power_Meter_1")
+        |> filter(fn: (r) => r["_field"] == "ACTIVE_ENERGY_DELIVERED")
+        |> aggregateWindow(every: 30m, fn: last)
+        |> fill(value: 0.0)
+        |> keep(columns: ["_time", "_value"])
+
+    join(tables: {first: first_points, last: last_points}, on: ["_time"])
+        |> map(fn: (r) => ({ time: r._time, AED: r._value_last - r._value_first }))
+        |> yield(name: "energy_diff")
+`
+
 
 const requestForm = (meter, factor, start, stop) => `
 from(bucket: "Machine_Power_Monitoring")
     |> range(start: ${start}, stop: ${stop})
     |> filter(fn: (r) => r["_measurement"] == "${meter}")
     |> filter(fn: (r) => r["_field"] == "${factor}")
+    |> keep(columns: ["_time", "_value"])
     |> yield(name: "mean")
 `
 
 
 module.exports = {
     AED_inMonth,
+    AED_inDay,
+
     requestForm,
 
 };

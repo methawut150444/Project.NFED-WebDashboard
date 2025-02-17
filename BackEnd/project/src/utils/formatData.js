@@ -1,3 +1,32 @@
+function format_AED_inDay_chart(rawData){
+    const timeSlots = [];
+
+    for (let h = 0; h < 24; h++) {
+        for (let m = 0; m < 60; m += 30) {
+            const time = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            timeSlots.push({ time, value: 0 });
+        }
+    }
+    
+    rawData.forEach(entry => {
+        const date = new Date(entry.time);
+        
+        // ✅ แปลงเป็นเวลา Bangkok (UTC+7)
+        const localTime = date.toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
+        const localDate = new Date(localTime);
+        
+        const hours = localDate.getHours();  // ใช้เวลาในโซน Bangkok
+        const minutes = localDate.getMinutes();
+        const roundedMinutes = minutes < 30 ? "00" : "30";
+        const timeKey = `${String(hours).padStart(2, '0')}:${roundedMinutes}`;
+
+        const target = timeSlots.find(slot => slot.time === timeKey);
+        if (target) {
+            target.value = entry.value ?? 0;
+        }
+    });
+    return timeSlots;
+};
 
 
 function processData(data) {
@@ -44,4 +73,9 @@ function processData(data) {
     return result;
 }
 
-module.exports = processData;
+
+module.exports = {
+    format_AED_inDay_chart,
+    processData
+
+}

@@ -3,32 +3,33 @@ import { useState, useEffect } from "react";
 import "./globals.css"; // ✅ Import Tailwind styles
 
 // Import API function
-import { fetch_AED_inMonth } from "./api/route";
+import { fetch_AED_inMonth, fetch_AED_inDay } from "./api/route";
 
 // Components
 import ShowRealTime from "../components/showTime";
-import PowerChart from "../components/chart";
+import { Chart_AED_inDay } from "../components/chart";
 
 function Page() {
   const [powerDiff, setPowerDiff] = useState<number | null>(null);
+  const [chartData, setChartData] = useState<{ time: string; value: number }[]>([]);
 
   useEffect(() => {
     const getData = async () => {
-      const data = await fetch_AED_inMonth();
-      setPowerDiff(data);
+      const powerData = await fetch_AED_inMonth();
+      setPowerDiff(powerData);
+
+      const chartData = await fetch_AED_inDay();
+      if (chartData) {
+        setChartData(chartData);
+      }
     };
 
-    // Fetch initially
     getData();
+    const interval = setInterval(getData, 60000);
 
-    // Auto-fetch every 1 minute
-    const interval = setInterval(() => {
-      getData();
-    }, 60000);
-
-    // Cleanup
     return () => clearInterval(interval);
   }, []);
+
 
   return (
     <div className="p-4 sm:ml-64">
@@ -77,8 +78,8 @@ function Page() {
                 >
                   Daily Energy Accumulation
                 </div>
-                <div id="graph"  className="px-1">
-                  <PowerChart />
+                <div id="graph" className="px-1">
+                  <Chart_AED_inDay data={chartData} />
                 </div>
               </div>
 
