@@ -10,8 +10,9 @@ router.get('/', (req, res) => {
 });
 
 
-router.get("/AED_inMonth", controller.AED_inMonth)  //* --> http://localhost:9999/api/powerMonitoring/AED_inMonth
-router.get("/AED_inDay", controller.AED_inDay)      //* --> http://localhost:9999/api/powerMonitoring/AED_inDay
+router.get("/Main_AED_inMonth", controller.Main_AED_inMonth)  //* --> http://localhost:9999/api/powerMonitoring/Main_AED_inMonth
+router.get("/Main_Power_inDay", controller.Main_Power_inDay)      //* --> http://localhost:9999/api/powerMonitoring/Main_Power_inDay
+router.get("/Main_Power_inYesterday", controller.Main_Power_inYesterday)      //* --> http://localhost:9999/api/powerMonitoring/Main_Power_inYesterday
 
 router.get("/test_getRawData", controller.Test_getRawData)  //* test_getRawData --> http://localhost:9999/api/powerMonitoring/test_getRawData
 

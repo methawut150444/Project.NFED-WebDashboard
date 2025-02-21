@@ -1,33 +1,57 @@
-function format_AED_inDay_chart(rawData){
-    const timeSlots = [];
+const moment = require('moment-timezone');
 
+function format_AED_inDay_chart(rawData) {
+    const TIMEZONE = "Asia/Bangkok";
+
+    // สร้างอาร์เรย์ช่วงเวลา 00:00 - 23:30 ทุกๆ 30 นาที
+    const timeSlots = [];
     for (let h = 0; h < 24; h++) {
-        for (let m = 0; m < 60; m += 30) {
-            const time = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-            timeSlots.push({ time, value: 0 });
+        for (let m of ["00", "30"]) {
+            timeSlots.push(`${String(h).padStart(2, "0")}:${m}`);
         }
     }
-    
-    rawData.forEach(entry => {
-        const date = new Date(entry.time);
-        
-        // ✅ แปลงเป็นเวลา Bangkok (UTC+7)
-        const localTime = date.toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
-        const localDate = new Date(localTime);
-        
-        const hours = localDate.getHours();  // ใช้เวลาในโซน Bangkok
-        const minutes = localDate.getMinutes();
-        const roundedMinutes = minutes < 30 ? "00" : "30";
-        const timeKey = `${String(hours).padStart(2, '0')}:${roundedMinutes}`;
 
-        const target = timeSlots.find(slot => slot.time === timeKey);
-        if (target) {
-            target.value = entry.value ?? 0;
-        }
+    // แปลง rawData เป็น { "HH:mm": value }
+    const transformedData = {};
+    rawData.forEach(({ time, value }) => {
+        const localTime = moment.utc(time).tz(TIMEZONE).format("HH:mm");
+        transformedData[localTime] = value;
     });
-    return timeSlots;
-};
 
+    // เวลาปัจจุบันในโซนไทย
+    const currentTime = moment().tz(TIMEZONE);
+    const currentHour = currentTime.hour();
+    const currentMinute = currentTime.minute();
+
+    // ปัดเวลาปัจจุบันเป็น 00 หรือ 30 นาที
+    const roundedCurrentTime = `${String(currentHour).padStart(2, "0")}:${currentMinute < 30 ? "00" : "30"}`;
+
+    // สร้าง array ของผลลัพธ์
+    const result = timeSlots.map(slot => ({
+        time: slot,
+        value: transformedData.hasOwnProperty(slot) ? transformedData[slot] : null
+    }));
+
+    // ตรวจสอบว่ามีข้อมูลล่าสุดที่ "กำลังเก็บอยู่" หรือไม่
+    const lastRecord = rawData[rawData.length - 1]; // ข้อมูลตัวสุดท้าย
+    const lastRecordTime = moment.utc(lastRecord.time).tz(TIMEZONE);
+    const lastRecordLocalTime = lastRecordTime.format("HH:mm");
+
+    // หา slot ใกล้ที่สุดจาก timeSlots
+    let nearestSlot = timeSlots.find(slot => slot >= lastRecordLocalTime);
+
+    // ถ้าข้อมูลล่าสุดอยู่ในช่วงเวลา 30 นาทีของรอบปัจจุบัน ให้ใช้ค่าอัปเดต
+    if (nearestSlot && transformedData[nearestSlot] === undefined) {
+        for (let i = 0; i < result.length; i++) {
+            if (result[i].time === nearestSlot && result[i].value === null) {
+                result[i].value = lastRecord.value;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
 
 function processData(data) {
     let result = [];

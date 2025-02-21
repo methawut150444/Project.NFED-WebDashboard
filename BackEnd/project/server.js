@@ -20,8 +20,8 @@ const router_powerMonitoring = require('./src/routes/powerMonitoring_route');
 app.use('/api/powerMonitoring', router_powerMonitoring)
 
 // //* -----------------< Weather Station >----------------- * // http://localhost:9999/api/weatherStation
-// const router_weatherStation = require('./src/routes/weatherStation_route');
-// app.use('/api/weatherStation', router_weatherStation)
+const router_weatherStation = require('./src/routes/weatherStation_route');
+app.use('/api/weatherStation', router_weatherStation)
 
 
 

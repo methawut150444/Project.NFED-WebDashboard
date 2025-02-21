@@ -13,7 +13,7 @@ function ShowRealTime() {
             set_currentTime(Get_currentTime());
             set_currentDate(Get_currentDate_2());
             set_currentLongDay(Get_currentLongDay());
-        }, 1000);
+        }, 60000);
 
         // Cleanup the interval on component unmount
         return () => clearInterval(interval);
@@ -21,7 +21,7 @@ function ShowRealTime() {
 
     return (
         <div className="flex-col items-center px-7 border-l-2 border-gray-300 space-y-1">
-            <div id="top" className="flex items-end gap-x-2">
+            <div id="top" className="flex items-baseline gap-x-2">
                 <p className="font-poppins text-5xl text-Blue_NFED_2">{currentTime}</p>
                 <p className="font-poppins text-xl text-Blue_NFED_2">{currentLongDay}</p>
             </div>

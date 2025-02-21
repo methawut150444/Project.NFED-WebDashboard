@@ -1,0 +1,15 @@
+const requestForm = (meter, factor, start, stop) => `
+from(bucket: "NFED_Lorawan")
+    |> range(start: ${start}, stop: ${stop})
+    |> filter(fn: (r) => r["_measurement"] == "${meter}")
+    |> filter(fn: (r) => r["_field"] == "${factor}")
+    |> keep(columns: ["_time", "_value"])
+    |> sort(columns: ["_time"], desc: true)
+    |> limit(n: 1)
+`
+
+
+module.exports = {
+    requestForm,
+
+};

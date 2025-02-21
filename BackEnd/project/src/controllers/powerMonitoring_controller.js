@@ -8,43 +8,70 @@ const datetimeUtils = require('../utils/datetimeUtils')
 const formatData = require('../utils/formatData')
 
 // Todo: // ---------------------------------------< AED_inMonth >--------------------------------------- //
-const AED_inMonth = async (req, res) => {
+const Main_AED_inMonth = async (req, res) => {
     // todo: -----> step: get request params or initial data
 
     // todo: -----> step: query data
-    const query = queries.AED_inMonth(datetimeUtils.utc1stMonth());
+    const query = queries.Main_AED_inMonth(datetimeUtils.utc1stMonth());
+    console.log(datetimeUtils.utc1stMonth())
 
     // todo: -----> step: check data
     try {
-        const data = await queryData(query);
+        const rawData = await queryData(query);
+
         // todo: -----> step: Convert data format !!!
-
-        const editData = data
-            .filter(item => item._measurement) // Remove entries that don't have _measurement
-            .map(({ _measurement, _diff }) => ({ _measurement, _diff }));
-
-        const result = editData.find(item => item._measurement === "Aircompressor_Power_Meter_1");      // * ทำไปก่อนเพราะค่าตัวอื่นเพี้ยน
+        // console.log(rawData)
+        const data = rawData[0]._diff
 
         // todo: -----> step: send response
-        res.status(200).json(result);
+        res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-// ---------------------------------------< AED_inDay >--------------------------------------- //
-const AED_inDay = async (req, res) => {
+// Todo: // ---------------------------------------< AED_inDay >--------------------------------------- //
+const Main_Power_inDay = async (req, res) => {
     // todo: -----> step: get request params or initial data
 
     // todo: -----> step: query data
-    const query = queries.AED_inDay(datetimeUtils.utc0000InDay());
+    const query = queries.Main_Power_inDay(datetimeUtils.utc0000InDay());
     // console.log(datetimeUtils.utc0000InDay())
     
     // todo: -----> step: check data
     try {
         const data = await queryData(query);
-        // todo: -----> step: Convert data format !!!
+        console.log(data)
 
+        // todo: -----> step: Convert data format !!!
+        const formattedData = formatData.format_AED_inDay_chart(data);
+        // console.log(formattedData)
+        
+        // todo: -----> step: send response
+        res.status(200).json(formattedData);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Todo: // ---------------------------------------< AED_inYesterday >--------------------------------------- //
+const Main_Power_inYesterday = async (req, res) => {
+    // todo: -----> step: get request params or initial data
+    const startTime = datetimeUtils.utc0000InYesterday()
+    const stopTime = datetimeUtils.utc0000InDay()
+
+    // console.log(startTime)
+    // console.log(stopTime)
+
+    // todo: -----> step: query data
+    const query = queries.Main_Power_inYesterday(startTime, stopTime);
+    
+    // todo: -----> step: check data
+    try {
+        const data = await queryData(query);
+        // console.log(data)
+
+        // todo: -----> step: Convert data format !!!
         const formattedData = formatData.format_AED_inDay_chart(data);
 
         // todo: -----> step: send response
@@ -197,8 +224,9 @@ const queryData = async (QUERY_COMMAND) => {
 };
 
 module.exports = {
-    AED_inMonth,
-    AED_inDay,
+    Main_AED_inMonth,
+    Main_Power_inDay,
+    Main_Power_inYesterday,
 
 
     Test_getRawData,

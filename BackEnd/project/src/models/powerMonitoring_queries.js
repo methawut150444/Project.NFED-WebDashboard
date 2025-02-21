@@ -1,51 +1,64 @@
-const AED_inMonth = (start) => `
-    import "experimental"
-    first = 
-        from(bucket: "Machine_Power_Monitoring")
-            |> range(start: ${start}, stop: now())
-            |> filter(fn: (r) => r["_field"] == "ACTIVE_ENERGY_DELIVERED")
-            |> keep(columns: ["_time", "_value", "_measurement"])
-            |> group(columns: ["_measurement"]) 
-            |> sort(columns: ["_time"], desc: false)
-            |> limit(n: 1)
+const Main_AED_inMonth = (start) => `
+    import "array"
 
-    last = 
-        from(bucket: "Machine_Power_Monitoring")
-            |> range(start: ${start}, stop: now())
-            |> filter(fn: (r) => r["_field"] == "ACTIVE_ENERGY_DELIVERED")
-            |> keep(columns: ["_time", "_value", "_measurement"])
-            |> group(columns: ["_measurement"]) 
-            |> sort(columns: ["_time"], desc: true)
-            |> limit(n: 1)
+    first_value = from(bucket: "Machine_Power_Monitoring")
+        |> range(start: ${start}, stop: now())
+        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main" and r["_field"] == "Total_Active_Energy")
+        |> first()
+        |> keep(columns: ["_value"])
+        |> findRecord(fn: (key) => true, idx: 0)
 
-    diff = join(tables: {first: first, last: last}, on: ["_measurement"])
-        |> map(fn: (r) => ({ _measurement: r._measurement, _diff: r._value_last - r._value_first }))
+        last_value = from(bucket: "Machine_Power_Monitoring")
+        |> range(start: ${start}, stop: now())
+        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main" and r["_field"] == "Total_Active_Energy")
+        |> last()
+        |> keep(columns: ["_value"])
+        |> findRecord(fn: (key) => true, idx: 0)
 
-    total = diff
-        |> group()
-        |> sum(column: "_diff")
+    diff = last_value._value - first_value._value
 
-    union(tables: [diff, total])
+    array.from(rows: [{ _measurement: "Powermeter_Main", _first: first_value._value, _last: last_value._value, _diff: diff }])
 `
 
-const AED_inDay = (start) => `
+const Main_Power_inDay = (start) => `
     first_points = from(bucket: "Machine_Power_Monitoring")
         |> range(start: ${start}, stop: now())
-        |> filter(fn: (r) => r["_measurement"] == "Aircompressor_Power_Meter_1")
-        |> filter(fn: (r) => r["_field"] == "ACTIVE_ENERGY_DELIVERED")
+        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main")
+        |> filter(fn: (r) => r["_field"] == "Total_Active_Energy")
         |> aggregateWindow(every: 30m, fn: first)
         |> keep(columns: ["_time", "_value"])
 
     last_points = from(bucket: "Machine_Power_Monitoring")
         |> range(start: ${start}, stop: now())
-        |> filter(fn: (r) => r["_measurement"] == "Aircompressor_Power_Meter_1")
-        |> filter(fn: (r) => r["_field"] == "ACTIVE_ENERGY_DELIVERED")
+        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main")
+        |> filter(fn: (r) => r["_field"] == "Total_Active_Energy")
         |> aggregateWindow(every: 30m, fn: last)
         |> fill(value: 0.0)
         |> keep(columns: ["_time", "_value"])
 
     join(tables: {first: first_points, last: last_points}, on: ["_time"])
-        |> map(fn: (r) => ({ time: r._time, AED: r._value_last - r._value_first }))
+        |> map(fn: (r) => ({ time: r._time, value: r._value_last - r._value_first }))
+        |> yield(name: "energy_diff")
+`
+
+const Main_Power_inYesterday = (start, stop) => `
+    first_points = from(bucket: "Machine_Power_Monitoring")
+        |> range(start: ${start}, stop: ${stop})
+        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main")
+        |> filter(fn: (r) => r["_field"] == "Total_Active_Energy")
+        |> aggregateWindow(every: 30m, fn: first)
+        |> keep(columns: ["_time", "_value"])
+
+    last_points = from(bucket: "Machine_Power_Monitoring")
+        |> range(start: ${start}, stop: ${stop})
+        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main")
+        |> filter(fn: (r) => r["_field"] == "Total_Active_Energy")
+        |> aggregateWindow(every: 30m, fn: last)
+        |> fill(value: 0.0)
+        |> keep(columns: ["_time", "_value"])
+
+    join(tables: {first: first_points, last: last_points}, on: ["_time"])
+        |> map(fn: (r) => ({ time: r._time, value: r._value_last - r._value_first }))
         |> yield(name: "energy_diff")
 `
 
@@ -61,8 +74,9 @@ from(bucket: "Machine_Power_Monitoring")
 
 
 module.exports = {
-    AED_inMonth,
-    AED_inDay,
+    Main_AED_inMonth,
+    Main_Power_inDay,
+    Main_Power_inYesterday,
 
     requestForm,
 
@@ -177,3 +191,5 @@ module.exports = {
 //     |> filter(fn: (r) => r["_measurement"] == "Aircompressor_Power_Meter_1" or r["_measurement"] == "CNC_Power_Meter_1" or r["_measurement"] == "CNC_Power_Meter_2" or r["_measurement"] == "CNC_Power_Meter_3" or r["_measurement"] == "CNC_Power_Meter_4" or r["_measurement"] == "CNC_Power_Meter_5" or r["_measurement"] == "CNC_Power_Meter_6" or r["_measurement"] == "CNC_Power_Meter_7" or r["_measurement"] == "CNC_Power_Meter_8" or r["_measurement"] == "Hall_Power_Meter_1" or r["_measurement"] == "CNC_Power_Meter_9" or r["_measurement"] == "Hall_Power_Meter_2" or r["_measurement"] == "Hall_Power_Meter_3" or r["_measurement"] == "Hall_Power_Meter_4" or r["_measurement"] == "Hall_Power_Meter_5" or r["_measurement"] == "Hall_Power_Meter_7" or r["_measurement"] == "Hall_Power_Meter_6" or r["_measurement"] == "Hall_Power_Meter_8" or r["_measurement"] == "Hall_Power_Meter_9" or r["_measurement"] == "Welding_Power_Meter_1")
 
 
+//Powermeter_Main
+// Total_Active_Energy
