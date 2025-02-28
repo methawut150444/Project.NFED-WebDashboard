@@ -13,6 +13,8 @@ import { Chart_AED_inDay } from "../components/chart";
 
 
 function Page() {
+  const [isClient, setIsClient] = useState(false);
+
   // ! useState for Power Monitoring
   const [AED_inMonth, setAED_inMonth] = useState<number | null>(null);
   const [AED_inDay, setAED_inDay] = useState<number | null>(null);
@@ -29,6 +31,13 @@ function Page() {
   const [aqiData, setAqiData] = useState<{ value: number; image: string; description: string; colorClass: string } | null>(null);
 
   useEffect(() => {
+    // console.log("🌍 Client-side loaded!");
+    setIsClient(true); // บอกว่า client-side โหลดแล้ว
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return; // ถ้า client-side ยังไม่โหลด ไม่ต้องรัน API
+
     const fetchData = async () => {
       try {
         const [
@@ -78,7 +87,7 @@ function Page() {
     const interval = setInterval(fetchData, 60000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isClient]); // รัน useEffect ก็ต่อเมื่อ client-side โหลดแล้ว
 
   // todo: /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// < UI Interface > 
   return (
