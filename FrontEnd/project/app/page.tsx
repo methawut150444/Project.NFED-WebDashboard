@@ -117,10 +117,12 @@ function Page() {
                 </div>
 
                 <div id="TOP R" className="w-3/4 m-3">
-                  <p
-                    className="w-auto px-3 py-1 justify-self-start  bg-Blue_NFED_7 rounded rounded-lg text-lg">
-                    Active Energy Delivered
-                  </p>
+
+                  <div id="Topic name" className="px-3 py-1 justify-self-start bg-Blue_NFED_7 rounded rounded-lg shadow-inner">
+                    <p className="w-auto text-xl">
+                      Active Energy Delivered
+                    </p>
+                  </div>
 
                   <div className="flex mx-3 pt-5 pr-5 justify-between items-start">
 
@@ -149,16 +151,16 @@ function Page() {
               <div id="split line" className="w-11/12 mb-3 justify-self-center border-b border-1 border-CU_Gray"></div>
               {/* ////////////////////////////////////////////////////////////////////////// */}
 
-              <div id="BOTTOM">
+              <div id="BOTTOM" className="mx-4">
                 <div id="BOTTOM T"
-                  className="flex mt-5 mx-3 justify-between items-start"
+                  className="flex mt-5 justify-between items-start"
                 >
-                  <p
-                    id="Topic name"
-                    className="w-auto px-3 py-1 justify-self-start bg-Blue_NFED_7 rounded rounded-lg text-lg "
-                  >
-                    Daily Energy Accumulation
-                  </p>
+                  <div id="Topic name" className="w-auto px-3 py-1 justify-items-center bg-Blue_NFED_7 rounded rounded-lg shadow-inner">
+                    <p className="text-xl">
+                      Daily Energy Accumulation
+                    </p>
+                  </div>
+
 
                   <div className="w-auto pr-5 text-xl">
                     <div id="today parameter" className="flex gap-2">
@@ -180,6 +182,11 @@ function Page() {
                   </div>
 
                 </div>
+
+                <div id="Topic name" className="w-full py-1 my-3 justify-items-center bg-Blue_NFED_7 rounded rounded-lg shadow-inner">
+                  <p className="text-xl"> Real Time Power Factor </p>
+                </div>
+
               </div>
 
               {/* ----------------------------------< End >---------------------------------- */}

@@ -18,6 +18,8 @@ const color = {
 };
 
 const Chart_AED_inDay = ({ dataToday, dataYesterday }) => {
+  const latestDataIndex = dataToday.findLastIndex(d => d.value !== null);
+
   const chartOptions = {
     chart: {
       type: "spline",
@@ -68,7 +70,7 @@ const Chart_AED_inDay = ({ dataToday, dataYesterday }) => {
       {
         name: "Yesterday",
         data: dataYesterday.map((d) => d.value),
-        color: "#D7D7D9", // CU_Gray
+        color: "#D7D7D9",
         dashStyle: "Dash",
         lineWidth: 2,
         marker: {
@@ -77,14 +79,24 @@ const Chart_AED_inDay = ({ dataToday, dataYesterday }) => {
       },
       {
         name: "Today",
-        data: dataToday.map((d) => d.value),
-        color: "#80af52", // P_Jumbo_color_0
+        data: dataToday.map((d, index) => ({
+          y: d.value,
+          marker: index === latestDataIndex ? {
+            enabled: true,
+            radius: 4, // ขยายขนาด marker
+            symbol: "circle",
+            fillColor: "green",
+            lineWidth: 1,
+            lineColor: "green",
+          } : undefined
+        })),
+        color: "#80af52",
         lineWidth: 2,
         marker: {
           radius: 2,
         },
       },
-    ],
+    ]
   };
 
   return (
