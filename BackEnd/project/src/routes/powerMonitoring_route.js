@@ -11,6 +11,8 @@ router.get('/', (req, res) => {
 
 
 router.get("/Main_AED_inMonth", controller.Main_AED_inMonth)  //* --> http://localhost:9999/api/powerMonitoring/Main_AED_inMonth
+router.get("/Main_AED_inDay", controller.Main_AED_inDay)  //* --> http://localhost:9999/api/powerMonitoring/Main_AED_inDay
+router.get("/Main_AED_inYesterday", controller.Main_AED_inYesterday)  //* --> http://localhost:9999/api/powerMonitoring/Main_AED_inYesterday
 router.get("/Main_Power_inDay", controller.Main_Power_inDay)      //* --> http://localhost:9999/api/powerMonitoring/Main_Power_inDay
 router.get("/Main_Power_inYesterday", controller.Main_Power_inYesterday)      //* --> http://localhost:9999/api/powerMonitoring/Main_Power_inYesterday
 

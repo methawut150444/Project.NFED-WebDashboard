@@ -49,7 +49,7 @@ const Chart_AED_inDay = ({ dataToday, dataYesterday }) => {
         if (!this.points) return "";
         const time = this.points[0].key; // ✅ ใช้ค่าเวลาแทน index ของจุด
         return `<b>${time}</b><br/>` + this.points
-          .map((point) => `<span style="color:${point.color}">●</span> <b>${point.series.name}</b>: ${point.y} kW <br/>`)
+          .map((point) => `<span style="color:${point.color}"> ● </span> <b>${point.series.name}</b>: ${point.y} kW <br/>`)
           .join("");
       },
     },
@@ -68,7 +68,7 @@ const Chart_AED_inDay = ({ dataToday, dataYesterday }) => {
       {
         name: "Yesterday",
         data: dataYesterday.map((d) => d.value),
-        color: "#707070", // CU_Gray
+        color: "#D7D7D9", // CU_Gray
         dashStyle: "Dash",
         lineWidth: 2,
         marker: {
@@ -88,7 +88,7 @@ const Chart_AED_inDay = ({ dataToday, dataYesterday }) => {
   };
 
   return (
-    <div className="w-full h-auto pt-3 pr-3">
+    <div className="w-full h-auto pt-1 pr-3">
       <HighchartsReact highcharts={Highcharts} options={chartOptions} />
     </div>
   );

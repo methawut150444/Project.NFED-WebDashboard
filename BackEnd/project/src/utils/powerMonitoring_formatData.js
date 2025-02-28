@@ -33,7 +33,7 @@ function format_AED_inDay_chart(rawData) {
     }));
 
     // ตรวจสอบว่ามีข้อมูลล่าสุดที่ "กำลังเก็บอยู่" หรือไม่
-    const lastRecord = rawData[rawData.length - 1]; // ข้อมูลตัวสุดท้าย
+    const lastRecord = rawData[rawData.length - 2]; // ข้อมูลตัวสุดท้าย ที่ไม่รวมข้อมูล realtime
     const lastRecordTime = moment.utc(lastRecord.time).tz(TIMEZONE);
     const lastRecordLocalTime = lastRecordTime.format("HH:mm");
 
@@ -96,6 +96,8 @@ function processData(data) {
 
     return result;
 }
+
+
 
 
 module.exports = {

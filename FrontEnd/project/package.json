@@ -17,6 +17,7 @@
     "highcharts": "^12.1.2",
     "highcharts-react-official": "^3.2.1",
     "i": "^0.3.7",
+    "leaflet": "^1.9.4",
     "next": "15.1.6",
     "npm": "^11.1.0",
     "react": "^19.0.0",
@@ -24,6 +25,7 @@
     "react-date-range": "^2.0.1",
     "react-dom": "^19.0.0",
     "react-google-charts": "^5.2.1",
+    "react-leaflet": "^5.0.0",
     "recharts": "^2.15.1"
   },
   "devDependencies": {

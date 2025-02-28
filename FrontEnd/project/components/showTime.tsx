@@ -13,7 +13,7 @@ function ShowRealTime() {
             set_currentTime(Get_currentTime());
             set_currentDate(Get_currentDate_2());
             set_currentLongDay(Get_currentLongDay());
-        }, 60000);
+        }, 1000);
 
         // Cleanup the interval on component unmount
         return () => clearInterval(interval);

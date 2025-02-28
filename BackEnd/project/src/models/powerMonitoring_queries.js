@@ -1,16 +1,18 @@
-const Main_AED_inMonth = (start) => `
+
+// todo: --------------------------------------------------------------// for found different value in custom time
+const diffPeriod = (meter, factor, start, stop) => `
     import "array"
 
     first_value = from(bucket: "Machine_Power_Monitoring")
-        |> range(start: ${start}, stop: now())
-        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main" and r["_field"] == "Total_Active_Energy")
+        |> range(start: ${start}, stop: ${stop})
+        |> filter(fn: (r) => r["_measurement"] == "${meter}" and r["_field"] == "${factor}")
         |> first()
         |> keep(columns: ["_value"])
         |> findRecord(fn: (key) => true, idx: 0)
 
         last_value = from(bucket: "Machine_Power_Monitoring")
-        |> range(start: ${start}, stop: now())
-        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main" and r["_field"] == "Total_Active_Energy")
+        |> range(start: ${start}, stop: ${stop})
+        |> filter(fn: (r) => r["_measurement"] == "${meter}" and r["_field"] == "${factor}")
         |> last()
         |> keep(columns: ["_value"])
         |> findRecord(fn: (key) => true, idx: 0)
@@ -20,39 +22,19 @@ const Main_AED_inMonth = (start) => `
     array.from(rows: [{ _measurement: "Powermeter_Main", _first: first_value._value, _last: last_value._value, _diff: diff }])
 `
 
-const Main_Power_inDay = (start) => `
-    first_points = from(bucket: "Machine_Power_Monitoring")
-        |> range(start: ${start}, stop: now())
-        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main")
-        |> filter(fn: (r) => r["_field"] == "Total_Active_Energy")
-        |> aggregateWindow(every: 30m, fn: first)
-        |> keep(columns: ["_time", "_value"])
-
-    last_points = from(bucket: "Machine_Power_Monitoring")
-        |> range(start: ${start}, stop: now())
-        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main")
-        |> filter(fn: (r) => r["_field"] == "Total_Active_Energy")
-        |> aggregateWindow(every: 30m, fn: last)
-        |> fill(value: 0.0)
-        |> keep(columns: ["_time", "_value"])
-
-    join(tables: {first: first_points, last: last_points}, on: ["_time"])
-        |> map(fn: (r) => ({ time: r._time, value: r._value_last - r._value_first }))
-        |> yield(name: "energy_diff")
-`
-
-const Main_Power_inYesterday = (start, stop) => `
+// todo: --------------------------------------------------------------// for found different value in every 30 min range 24H
+const inDayFormat = (meter, factor, start, stop) => `
     first_points = from(bucket: "Machine_Power_Monitoring")
         |> range(start: ${start}, stop: ${stop})
-        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main")
-        |> filter(fn: (r) => r["_field"] == "Total_Active_Energy")
+        |> filter(fn: (r) => r["_measurement"] == "${meter}")
+        |> filter(fn: (r) => r["_field"] == "${factor}")
         |> aggregateWindow(every: 30m, fn: first)
         |> keep(columns: ["_time", "_value"])
 
     last_points = from(bucket: "Machine_Power_Monitoring")
         |> range(start: ${start}, stop: ${stop})
-        |> filter(fn: (r) => r["_measurement"] == "Powermeter_Main")
-        |> filter(fn: (r) => r["_field"] == "Total_Active_Energy")
+        |> filter(fn: (r) => r["_measurement"] == "${meter}")
+        |> filter(fn: (r) => r["_field"] == "${factor}")
         |> aggregateWindow(every: 30m, fn: last)
         |> fill(value: 0.0)
         |> keep(columns: ["_time", "_value"])
@@ -74,9 +56,8 @@ from(bucket: "Machine_Power_Monitoring")
 
 
 module.exports = {
-    Main_AED_inMonth,
-    Main_Power_inDay,
-    Main_Power_inYesterday,
+    diffPeriod,
+    inDayFormat,
 
     requestForm,
 

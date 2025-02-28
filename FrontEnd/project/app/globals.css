@@ -4,20 +4,22 @@
 
 .board{
     @apply 
-    p-4 
+    px-6
+    py-4 
     /* border-2 border-gray-200 border-dashed  */
     rounded-lg 
     dark:border-gray-700 
 
     text-gray-600
     /* text-CU_Gray */
+    font-poppins
 }
 .board-layout{
-    @apply grid sm:grid-cols-2 gap-5 grid-cols-1
+    @apply grid sm:grid-cols-2 gap-10 grid-cols-1
 }
 
 .note {
-    @apply h-auto rounded bg-gray-50 dark:bg-gray-800 shadow-xl rounded-lg border border-gray-100
+    @apply h-auto rounded bg-gray-50 dark:bg-gray-800 shadow-2xl rounded-lg border border-gray-100
 }
 .note-topicName{
     @apply h-auto pl-3 p-2 rounded-t-lg 
@@ -26,11 +28,25 @@
     text-white text-xl font-poppins font-bold
 }
 .note-content{
-    @apply w-full justify-self-start rounded bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-300
+    @apply w-full p-4 justify-self-start rounded bg-gray-50 dark:bg-gray-800 
 }
-
-
 
 .mainParameter{
     @apply font-poppins text-gray-600
+}
+
+.weatherStation-AQI_Block{
+    @apply flex h-auto my-2 mx-4
+    bg-gradient-to-br from-gray-100 to-Aluminium_Gray_1
+    rounded-full shadow-xl
+}
+.weatherStation-factorBlock_PM{
+    @apply flex w-full px-4 justify-center
+    bg-gradient-to-br from-gray-100 to-Aluminium_Gray_1
+    rounded-full shadow-xl
+}
+.weatherStation-factorBlock_Temp_Humi_WindSpeed{
+    @apply flex w-full px-4 justify-center
+    bg-gradient-to-br from-gray-100 to-Aluminium_Gray_1
+    rounded-full shadow-xl
 }

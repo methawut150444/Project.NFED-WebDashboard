@@ -18,7 +18,7 @@ const Sidebar = () => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div>
+    <div >
       <button
         onClick={toggleSidebar}
         type="button"
@@ -27,14 +27,14 @@ const Sidebar = () => {
         <MenuIcon />
       </button>
 
-      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform shadow-xl ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}>
+      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform shadow-2xl ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0`}>
         <div className="h-full px-3 py-5 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <button onClick={toggleSidebar} className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 sm:hidden">
             <CloseIcon />
           </button>
 
           <Link href="/" className="flex items-center ps-2.5 mb-4 pb-5 border-b-2 border-gray-300">
-            <Image alt="NFED Logo" src="/NFED_logo.png" className="h-14 w-auto" width={5000} height={500} priority />
+            <Image alt="NFED_Logo" src="/img/NFED_logo.png" className="h-14 w-auto" width={5000} height={500} priority />
           </Link>
 
           <ul className="space-y-2 font-medium">

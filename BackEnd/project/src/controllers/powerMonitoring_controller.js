@@ -5,15 +5,69 @@ const queries = require('../models/powerMonitoring_queries');
 
 // component
 const datetimeUtils = require('../utils/datetimeUtils')
-const formatData = require('../utils/formatData')
+const powerMonitoring_formatData = require('../utils/powerMonitoring_formatData')
 
-// Todo: // ---------------------------------------< AED_inMonth >--------------------------------------- //
+// Todo: // ---------------------------------------< Main_AED_inMonth >--------------------------------------- //
 const Main_AED_inMonth = async (req, res) => {
     // todo: -----> step: get request params or initial data
+    const meter = "Powermeter_Main"
+    const factor = "Total_Active_Energy"
+    const startTime = datetimeUtils.utc1stMonth()
+    const stopTime = "now()"
 
     // todo: -----> step: query data
-    const query = queries.Main_AED_inMonth(datetimeUtils.utc1stMonth());
-    console.log(datetimeUtils.utc1stMonth())
+    const query = queries.diffPeriod(meter, factor, startTime, stopTime);
+    // console.log(datetimeUtils.utc1stMonth())
+
+    // todo: -----> step: check data
+    try {
+        const rawData = await queryData(query);
+
+        // todo: -----> step: Convert data format !!!
+        // console.log(rawData)
+        const data = rawData[0]._diff
+
+        // todo: -----> step: send response
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+// Todo: // ---------------------------------------< Main_AED_inDay >--------------------------------------- //
+const Main_AED_inDay = async (req, res) => {
+    // todo: -----> step: get request params or initial data
+    const meter = "Powermeter_Main"
+    const factor = "Total_Active_Energy"
+    const startTime = datetimeUtils.utc0000InDay()
+    const stopTime = "now()"
+
+    // todo: -----> step: query data
+    const query = queries.diffPeriod(meter, factor, startTime, stopTime);
+
+    // todo: -----> step: check data
+    try {
+        const rawData = await queryData(query);
+
+        // todo: -----> step: Convert data format !!!
+        // console.log(rawData)
+        const data = rawData[0]._diff
+
+        // todo: -----> step: send response
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+// Todo: // ---------------------------------------< Main_AED_inYesterday >--------------------------------------- //
+const Main_AED_inYesterday = async (req, res) => {
+    // todo: -----> step: get request params or initial data
+    const meter = "Powermeter_Main"
+    const factor = "Total_Active_Energy"
+    const startTime = datetimeUtils.utc0000InYesterday()
+    const stopTime = datetimeUtils.utc0000InDay()
+
+    // todo: -----> step: query data
+    const query = queries.diffPeriod(meter, factor, startTime, stopTime);
 
     // todo: -----> step: check data
     try {
@@ -30,23 +84,26 @@ const Main_AED_inMonth = async (req, res) => {
     }
 }
 
-// Todo: // ---------------------------------------< AED_inDay >--------------------------------------- //
+// Todo: // ---------------------------------------< Main_Power_inDay >--------------------------------------- //
 const Main_Power_inDay = async (req, res) => {
     // todo: -----> step: get request params or initial data
+    const meter = "Powermeter_Main"
+    const factor = "Total_Active_Energy"
+    const startTime = datetimeUtils.utc0000InDay()
+    const stopTime = "now()"
 
     // todo: -----> step: query data
-    const query = queries.Main_Power_inDay(datetimeUtils.utc0000InDay());
-    // console.log(datetimeUtils.utc0000InDay())
-    
+    const query = queries.inDayFormat(meter, factor, startTime, stopTime);
+
     // todo: -----> step: check data
     try {
-        const data = await queryData(query);
-        console.log(data)
+        const rawData = await queryData(query);
+        // console.log(rawData)
 
         // todo: -----> step: Convert data format !!!
-        const formattedData = formatData.format_AED_inDay_chart(data);
+        const formattedData = powerMonitoring_formatData.format_AED_inDay_chart(rawData);
         // console.log(formattedData)
-        
+
         // todo: -----> step: send response
         res.status(200).json(formattedData);
     } catch (error) {
@@ -54,25 +111,24 @@ const Main_Power_inDay = async (req, res) => {
     }
 };
 
-// Todo: // ---------------------------------------< AED_inYesterday >--------------------------------------- //
+// Todo: // ---------------------------------------< Main_Power_inYesterday >--------------------------------------- //
 const Main_Power_inYesterday = async (req, res) => {
     // todo: -----> step: get request params or initial data
+    const meter = "Powermeter_Main"
+    const factor = "Total_Active_Energy"
     const startTime = datetimeUtils.utc0000InYesterday()
     const stopTime = datetimeUtils.utc0000InDay()
 
-    // console.log(startTime)
-    // console.log(stopTime)
-
     // todo: -----> step: query data
-    const query = queries.Main_Power_inYesterday(startTime, stopTime);
-    
+    const query = queries.inDayFormat(meter, factor, startTime, stopTime);
+
     // todo: -----> step: check data
     try {
-        const data = await queryData(query);
+        const rawData = await queryData(query);
         // console.log(data)
 
         // todo: -----> step: Convert data format !!!
-        const formattedData = formatData.format_AED_inDay_chart(data);
+        const formattedData = powerMonitoring_formatData.format_AED_inDay_chart(rawData);
 
         // todo: -----> step: send response
         res.status(200).json(formattedData);
@@ -225,6 +281,8 @@ const queryData = async (QUERY_COMMAND) => {
 
 module.exports = {
     Main_AED_inMonth,
+    Main_AED_inDay,
+    Main_AED_inYesterday,
     Main_Power_inDay,
     Main_Power_inYesterday,
 
