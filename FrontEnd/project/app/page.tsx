@@ -53,11 +53,14 @@ function Page() {
           wind,
           aqi
         ] = await Promise.all([
+          // * powerMonitoring API
           API_PowerMonitoring.Main_AED_inMonth(),
           API_PowerMonitoring.Main_AED_inDay(),
           API_PowerMonitoring.Main_AED_inYesterday(),
           API_PowerMonitoring.Main_Power_inDay(),
           API_PowerMonitoring.Main_Power_inYesterday(),
+
+          // * weatherStation API
           API_WeatherStation.Temp_now(),
           API_WeatherStation.Humi_now(),
           API_WeatherStation.PM2_5_now(),
@@ -66,12 +69,14 @@ function Page() {
           API_WeatherStation.getAQI(),
         ]);
 
-        // todo: Set data to state
+        // todo: setState --> powerMonitoring API
         setAED_inMonth(month);
         setAED_inDay(today);
         setAED_inYesterday(yesterday);
         setChartPowerToday(powerToday || []);
         setChartPowerYesterday(powerYesterday || []);
+
+        // todo: setState --> weatherStation API
         setTempNow(temp);
         setHumiNow(humi);
         setPM25Now(pm25);
